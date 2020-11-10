@@ -3,18 +3,22 @@
 #include <stdlib.h>
 #include <time.h>
 
-int lengthm, lengthk, a, b, c, i;
+int lengthm, lengthk, a, b, c, i, y;
 time_t t;
 char mtext[128];
 char key[128];
 char ctext[128];
 
 int xor() {
-  for (i = 0; i < lengthm; i++) {
+  for (i = 0; i < lengthm - 1; i++) {
     ctext[i] = mtext[i] ^ key[i];
     mtext[i] = ctext[i] ^ key[i];
+    ctext[i] = (ctext[i] % 96) + 31;
   }
-  printf("The ciphertext C resulted from the first encryption is:\n");
+  printf("The ciphertext C resulted from the first encryption is (displayed in hexadecimal):\n");
+  for (i = 0; i < strlen(ctext); i++)
+    printf("%X", ctext[i]);
+  printf("\nThe ciphertext C resulted from the first encryption is (displayed in characters):\n");
   printf("%s\n", ctext);
   printf("The ciphertext C' resulted from the second encryption is:\n");
   printf("%s\n", mtext);
@@ -27,9 +31,8 @@ int keykey() {
   lengthk = strlen(key);
   if (lengthk >= lengthm) {
     printf("The key of the encryption is the following string: %s\n", key);
-    for (i = 0; i <= lengthk; i++) {
+    for (i = 0; i < lengthk; i++)
       key[i] = (key[i] % 96) + 31;
-      }
     xor();
     }
   else
@@ -42,9 +45,11 @@ int rankey() {
     srand (time(&t) * i);
     b = (rand() % 96) + 31;
     key[i] = b;
-  }
-  printf("The randomly generated key of the encryption is the string:\n");
-  printf("%s\n", key);
+    }
+  printf("The randomly generated key is (displayed in hexadecimal): \n");
+  for (i = 0; i < 128; i++)
+    printf("%X", key[i]);
+  printf("\n(displayed in characters):\n %s\n", key);
   xor();
   return 0;
 }
